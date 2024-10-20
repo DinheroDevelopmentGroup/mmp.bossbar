@@ -1,4 +1,6 @@
 {
-  "name": "ddg.bossbar",
-  "dependencies": []
+  "dependencies": [
+    "https://github.com/DinheroDevelopmentGroup/mmp.prismarine.chat.git"
+  ],
+  "name": "ddg.bossbar"
 }

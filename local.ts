@@ -1,13 +1,12 @@
 import { randomUUID } from 'crypto';
 
 import proxy from '../internal.proxy/local.js';
-
-// TODO: prismarine-chat
+import { MessageBuilder } from '../prismarine.chat/local.js';
 
 export interface BossbarOptions {
   uuid?: string;
   health?: number;
-  title?: Record<any, unknown>;
+  title?: MessageBuilder;
   color?: number;
   dividers?: number;
   flags?: number;
@@ -26,7 +25,7 @@ export default class Bossbar {
     return this._health;
   }
 
-  get title(): Record<any, unknown> {
+  get title(): MessageBuilder {
     return this._title;
   }
 
@@ -45,7 +44,7 @@ export default class Bossbar {
   constructor(options: BossbarOptions = {}) {
     this.uuid = options.uuid ?? randomUUID();
     this._health = options.health ?? 0;
-    this._title = options.title ?? { text: 'Bossbar' };
+    this._title = options.title ?? MessageBuilder.fromString('Bossbar');
     this._color = options.color ?? 6;
     this._dividers = options.dividers ?? 0;
     this._flags = options.flags ?? 0;
@@ -86,9 +85,13 @@ export default class Bossbar {
     });
   }
 
-  set title(title: Record<any, unknown>) {
+  set title(title: MessageBuilder) {
     this._title = title;
 
+    this.updateTitle();
+  }
+
+  public updateTitle(): void {
     this.writePacket({
       action: 3,
       title: JSON.stringify(this.title),
