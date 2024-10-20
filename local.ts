@@ -6,16 +6,18 @@ import { MessageBuilder } from '../prismarine.chat/local.js';
 export interface BossbarOptions {
   uuid?: string;
   health?: number;
+  clampHealth?: boolean;
   title?: MessageBuilder;
+  visible?: boolean;
   color?: number;
   dividers?: number;
   flags?: number;
-  visible?: boolean;
 }
 
 export default class Bossbar {
   public readonly uuid;
   protected _health;
+  public clampHealth;
   protected _title;
   protected _color;
   protected _dividers;
@@ -44,6 +46,7 @@ export default class Bossbar {
   constructor(options: BossbarOptions = {}) {
     this.uuid = options.uuid ?? randomUUID();
     this._health = options.health ?? 0;
+    this.clampHealth = options.clampHealth ?? true;
     this._title = options.title ?? MessageBuilder.fromString('Bossbar');
     this._color = options.color ?? 6;
     this._dividers = options.dividers ?? 0;
@@ -77,6 +80,11 @@ export default class Bossbar {
   }
 
   set health(health: number) {
+    if (this.clampHealth) {
+      health = Math.max(0, health);
+      health = Math.min(1, health);
+    }
+
     this._health = health;
 
     this.writePacket({
